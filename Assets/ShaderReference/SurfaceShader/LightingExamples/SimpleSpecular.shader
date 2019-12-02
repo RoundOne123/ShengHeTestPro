@@ -15,9 +15,10 @@
 
 		CGPROGRAM
 
-#pragma suraface surf Specular
+		#pragma surface surf Specular
 
-		struct Input {
+		struct Input 
+		{
 			float2 uv_MainTex;
 		};
 
@@ -31,23 +32,21 @@
 		half4 LightingSpecular(SurfaceOutput s, half3 lightDir, half atten)
 		{
 
-			half3 h = normalize(s.Normal, lightDir);
+			half3 h = normalize(s.Normal + lightDir);
 
 			half diff = max(0, dot(s.Normal, lightDir));
 
 			half nh = max(0, dot(s.Normal, h));
-
-			half spec = max(nh, 48);
+			half spec = pow(nh, 48.0);
 
 			half4 c;
-			c.rgb = s.Albedo * (_LightColor0.rgb * diff + _LightColor0.rgb * spec) * atten;
+			c.rgb = (s.Albedo * _LightColor0.rgb * diff + _LightColor0.rgb * spec) * atten;
 			c.a = s.Alpha;
 			return c;
 		}
 
 		ENDCG
 	}
-
 
 	Fallback "Diffuse"
 }
